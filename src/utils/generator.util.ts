@@ -3,6 +3,7 @@ import Ticket from "../tickets/Ticket";
 import Motorcycle, { MotorcycleType } from "../tickets/Motorcycle";
 import Lost from "../tickets/Lost";
 import Cash from "../tickets/Cash";
+import { randomEnumValue } from "./random-enum.util";
 
 const plateNumbers = new Set();
 const colors = ['Red', 'Blue', 'Black', 'White'];
@@ -37,7 +38,6 @@ function generateYear(): number {
   return Math.ceil(10*Math.random() + currentYear-10);
 }
 
-
 export function generatePrize(): Ticket {
   return generators[Math.floor(Math.random()*generators.length)]();
 }
@@ -47,7 +47,7 @@ function generateCar(): Car {
   const color = generateColor();
   const year = generateYear();
 
-  return new Car(plateNumber, color, year, CarType.Mazda);
+  return new Car(plateNumber, color, year, randomEnumValue(CarType));
 }
 
 function generateMotorcycle(): Motorcycle {
@@ -55,7 +55,7 @@ function generateMotorcycle(): Motorcycle {
   const color = generateColor();
   const year = generateYear();
 
-  return new Motorcycle(plateNumber, color, year, MotorcycleType.OffRoad);
+  return new Motorcycle(plateNumber, color, year, randomEnumValue(MotorcycleType));
 }
 
 function generateLost(): Lost {

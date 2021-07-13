@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 
-import { generatePrize } from "./utils/Generator";
+import { generatePrize } from "./utils/generator.util";
 import Ticket from "./tickets/Ticket";
 
 @Injectable()
