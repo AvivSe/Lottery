@@ -8,7 +8,7 @@ export enum MotorcycleType {
 class Motorcycle extends Vehicle {
   type: MotorcycleType;
 
-  constructor(plateNumber: number, color: string, year: number, type) {
+  constructor(plateNumber: number, color: string, year: number, type: MotorcycleType) {
     super(plateNumber, color, year);
     this.type = type;
   }

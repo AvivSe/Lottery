@@ -6,11 +6,6 @@ import Ticket from "./tickets/Ticket";
 export class AppController {
   constructor(private readonly appService: LotteryService) {}
 
-  @Get()
-  getHello(): any {
-    return this.appService.getTicketIds();
-  }
-
   @Get('/purchase')
   purchase(): any {
     return this.appService.purchase();

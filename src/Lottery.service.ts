@@ -6,19 +6,16 @@ import Ticket from "./tickets/Ticket";
 
 @Injectable()
 export class LotteryService {
-  private tickets: Map<string, Ticket>;
+  private readonly tickets: Map<string, Ticket>;
 
   constructor() {
     this.tickets = new Map<string, Ticket>();
   }
+
   purchase(): string {
     const uuid = uuidv4();
     this.tickets.set(uuid, generatePrize());
     return uuid;
-  }
-
-  getTicketIds(): string[] {
-    return Array.from(this.tickets.keys());
   }
 
   validateTicket(id: string): Ticket {
