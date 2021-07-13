@@ -1,10 +1,15 @@
 import { Controller, Get, Param } from "@nestjs/common";
-import { LotteryService } from './Lottery.service';
-import Ticket from "./tickets/Ticket";
+import { LotteryService } from './lottery.service';
+import Ticket, { TicketsMap } from "./tickets/Ticket";
 
 @Controller('/api')
 export class AppController {
   constructor(private readonly appService: LotteryService) {}
+
+  @Get('/get-tickets')
+  getTickets(): TicketsMap {
+    return this.appService.getTickets()
+  }
 
   @Get('/purchase')
   purchase(): any {
