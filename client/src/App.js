@@ -1,32 +1,44 @@
-import { purchase, validateTicket } from "./api/http-client";
-import { useState } from "react";
+import { getTickets, purchase, validateTicket } from "./api/http-client";
+import { useEffect, useState } from "react";
 import { Button, Card, CardActionArea, CardContent, Chip } from "@material-ui/core";
 import styled from "styled-components";
-import _ from 'lodash';
+import _ from "lodash";
 
 const CardsContainer = styled.div`
-  display: flex;
+  overflow-y: scroll;
   flex-wrap: wrap;
+  display: flex;
+  height: 75vh;
+  position: fixed;
+  bottom: 0;
 `;
 
 const StyledCard = styled(Card)`
   width: 300px;
+  height: 200px;
   margin: 20px;
-`;
+  font-size: 12px;
+`
 
 const Header = styled.header`
-  min-height: 300px;
   display: flex;
   align-items: center;
   text-align: center;
   justify-content: center;
   background-color: #282c34;
+  height: 14vh;
+  padding: 30px 0;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
 `;
 const PurchaseButton = styled(Button)`
   height: 240px;
   width: 240px;
-  border-radius: 400px !important;
+  border-radius: 100px !important;
+  transform: rotate(-10deg);
   font-size: 2.1em !important;
+  margin-bottom: -100px !important;
 `;
 
 const CardHeader = styled.div`
@@ -40,49 +52,59 @@ const ValidateButton = styled(Button)`
   width: 100px;
   border-radius: 100px !important;
   font-size: 1.2em !important;
-`
+`;
+
 function App() {
-  const [purchases, setPurchases] = useState([]);
-  const [validatedTickets, setValidatedTickets] = useState({});
+  const [tickets, setTickets] = useState({});
+
+  useEffect(function() {
+    getTickets().then(data => {
+      setTickets(data);
+    });
+  }, []);
 
   function handlePurchaseClick() {
-    purchase().then(ticketId => {
-      setPurchases([{ id: ticketId, date: new Date().toLocaleString() }, ...purchases]);
+    purchase().then(({ id, date }) => {
+      setTickets({ ...tickets, [id]: { id, date } });
     });
   }
 
   function handleValidateTicket(id) {
     validateTicket(id).then(data => {
-      setValidatedTickets({ ...validatedTickets, [id]: data });
+      console.log(data);
+      setTickets({ ...tickets, [data.id]: data });
     });
   }
+
+  const sortedTickets = Object.values(tickets)
+    .sort((ticket, anotherTicket) =>
+      new Date(anotherTicket.date) - new Date(ticket.date));
 
   return (
     <div>
       <Header>
-        <PurchaseButton variant="contained" color={"secondary"} onClick={handlePurchaseClick}>Purchase</PurchaseButton>
+        <PurchaseButton variant="contained" color="secondary" onClick={handlePurchaseClick}>Purchase</PurchaseButton>
       </Header>
       <CardsContainer>
-        {purchases.map(({ id, date }) => {
-          const isValidated = !!validatedTickets[id];
+        {sortedTickets.map(({ id, date, isValidate, ...rest }) => {
+          console.log(isValidate)
           const onValidateClick = () => handleValidateTicket(id);
 
           return <StyledCard key={id}>
-            <CardActionArea disabled={isValidated} onClick={onValidateClick}>
               <CardContent>
                 <CardHeader>
-                  <div>{date}</div>
-                  <Chip size={"small"} variant={"outlined"} color={isValidated ? '' : "secondary"}
-                        label={isValidated ? "Validated" : "Not Validated"} />
+                  <div>{new Date(date).toLocaleString()}</div>
+                  <Chip size={"small"} variant={"outlined"} color={isValidate ? "" : "secondary"}
+                        label={isValidate ? "Validated" : "Not Validated"} />
                 </CardHeader>
                 <div>
-                  {!isValidated && <ValidateButton variant="outlined" color={"secondary"} onClick={onValidateClick}>Validate</ValidateButton>}
-                  {isValidated && Object.entries(validatedTickets[id]).map(([key, value]) => <div key={key}>
+                  {!isValidate && <ValidateButton variant="outlined" color={"secondary"}
+                                                   onClick={onValidateClick}>Validate</ValidateButton>}
+                  {isValidate && Object.entries(rest).map(([key, value]) => <div key={key}>
                     {_.startCase(key)}: <b>{value}</b>
                   </div>)}
                 </div>
               </CardContent>
-            </CardActionArea>
           </StyledCard>;
         })}
       </CardsContainer>

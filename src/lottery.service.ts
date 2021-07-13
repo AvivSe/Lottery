@@ -14,15 +14,15 @@ export class LotteryService {
 
   getTickets(): TicketsMap {
     return Array.from(this.tickets.values()).reduce(function(prev, curr) {
-      prev[curr.id] = curr.isValidate ? curr : null;
+      prev[curr.id] = curr.isValidate ? curr : { isValidate: false, date: curr.date, id: curr.id };
       return prev;
     }, {});
   }
 
-  purchase(): string {
+  purchase(): any {
     const ticket = generatePrize();
     this.tickets.set(ticket.id, ticket);
-    return ticket.id;
+    return { id: ticket.id, date: ticket.date, isValidate: false };
   }
 
   validateTicket(id: string): Ticket {

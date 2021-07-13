@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export type TicketsMap = { [key: string]: Ticket | null };
+export type TicketsMap = { [key: string]: Ticket | { isValidate: boolean, date: Date } };
 
 class Ticket {
   id: string;
