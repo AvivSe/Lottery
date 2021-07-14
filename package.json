@@ -8,6 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build:client": "npm run build --prefix client",
+    "install:client": "npm install --prefix client ",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
